@@ -1,0 +1,91 @@
+template:
+  name: Product Context Template
+  id: product-context-template
+  version: 1.0
+  description: Standardized template for documenting a product feature or domain
+  language: "en"
+
+sections:
+  - title: Metadata
+    required: true
+    elicit: false
+    instructions: Automatically fill basic context metadata (generate in English)
+    content: |
+      - **Domain**: {domain_name}
+      - **Last Update**: {last_update}
+      - **Owner**: {owner}
+      - **Status**: {status} (Draft | Active | Deprecated)
+      - **Source Files**: {source_files}
+
+  - title: Overview
+    required: true
+    elicit: false
+    instructions: Concise description of feature or domain (2-3 paragraphs max, generate in English)
+    content: |
+      {AI_GENERATE: Summarize purpose and reason for this feature}
+
+  - title: Main Use Cases
+    required: true
+    elicit: false
+    instructions: List 3-5 main use cases with concrete examples (generate in English)
+    content: |
+      {AI_GENERATE: Identify main user journeys}
+
+  - title: Key Features
+    required: true
+    elicit: false
+    instructions: Describe main features with user value (generate in English)
+    content: |
+      {AI_GENERATE: List features with business value}
+
+  - title: User Flows
+    required: true
+    elicit: false
+    instructions: Describe main user flow(s), step by step (generate in English)
+    content: |
+      {AI_GENERATE: Document user journeys step by step}
+
+  - title: Business Rules
+    required: true
+    elicit: false
+    instructions: List business rules, validations, and constraints (generate in English)
+    content: |
+      {AI_GENERATE: Extract business rules from code and logic}
+
+  - title: Functional Dependencies
+    required: true
+    elicit: false
+    instructions: Identify other features or systems this domain depends on (generate in English)
+    content: |
+      {AI_GENERATE: Map inter-feature dependencies}
+
+  - title: External Integrations
+    required: false
+    elicit: false
+    instructions: List third-party services, external APIs used (generate in English)
+    content: |
+      {AI_GENERATE: Identify external integrations}
+
+  - title: Historical Product Decisions
+    required: false
+    elicit: true
+    instructions: Document important product choices and their rationale (generate in English)
+    content: |
+      {AI_ELICIT: Ask user about key product decisions and why they were made}
+
+  - title: Future Evolutions
+    required: false
+    elicit: true
+    instructions: Roadmap or planned evolutions for this domain (generate in English)
+    content: |
+      {AI_ELICIT: Ask about future vision for this feature}
+
+  - title: References
+    required: true
+    elicit: false
+    instructions: Links to code, documentation, designs, discussions
+    content: |
+      - **Main Files**: {main_files}
+      - **Tests**: {test_files}
+      - **External Docs**: {external_docs}
+      - **Designs**: {design_links}

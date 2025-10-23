@@ -1,0 +1,106 @@
+template:
+  name: Technical Context Template
+  id: technical-context-template
+  version: 1.0
+  description: Standardized template for documenting a technical aspect, tool, or guideline
+  language: "en"
+
+sections:
+  - title: Metadata
+    required: true
+    elicit: false
+    instructions: Automatically fill technical metadata (generate in English)
+    content: |
+      - **Category**: {category} (Architecture | Tool | Pattern | Guideline | Memory)
+      - **Last Update**: {last_update}
+      - **Owner**: {owner}
+      - **Status**: {status} (Active | Deprecated | Experimental)
+      - **Source Files**: {source_files}
+
+  - title: Technical Overview
+    required: true
+    elicit: false
+    instructions: Concise description of technical component, tool or pattern (2-3 paragraphs, generate in English)
+    content: |
+      {AI_GENERATE: Summarize technical role and purpose}
+
+  - title: Architecture & Design
+    required: true
+    elicit: false
+    instructions: Describe architecture, patterns used, design choices (generate in English)
+    content: |
+      {AI_GENERATE: Analyze architecture and design patterns}
+
+  - title: Configuration & Setup
+    required: true
+    elicit: false
+    instructions: Document required configuration, environment variables, setup steps (generate in English)
+    content: |
+      {AI_GENERATE: Extract configuration and setup steps}
+
+  - title: API & Interfaces
+    required: false
+    elicit: false
+    instructions: Describe public APIs, interfaces, contracts (generate in English)
+    content: |
+      {AI_GENERATE: Document exposed interfaces and their usage}
+
+  - title: Patterns & Best Practices
+    required: true
+    elicit: false
+    instructions: Identify code patterns, conventions, best practices (generate in English)
+    content: |
+      {AI_GENERATE: Extract patterns and conventions from existing code}
+
+  - title: Usage Examples
+    required: true
+    elicit: false
+    instructions: Provide concrete usage examples with code (generate in English)
+    content: |
+      {AI_GENERATE: Find and document real examples from codebase}
+
+  - title: Technical Dependencies
+    required: true
+    elicit: false
+    instructions: List dependencies (packages, services, other modules) (generate in English)
+    content: |
+      {AI_GENERATE: Map technical dependencies}
+
+  - title: Tests & Validation
+    required: true
+    elicit: false
+    instructions: Describe test strategy, test examples, coverage (generate in English)
+    content: |
+      {AI_GENERATE: Analyze existing tests and testing strategy}
+
+  - title: Historical Technical Decisions
+    required: false
+    elicit: true
+    instructions: Document important technical choices and their rationale (ADR style, generate in English)
+    content: |
+      {AI_ELICIT: Ask user about key technical decisions and their context}
+
+  - title: Troubleshooting & FAQ
+    required: false
+    elicit: false
+    instructions: Document common problems and their solutions (generate in English)
+    content: |
+      {AI_GENERATE: Identify error patterns and solutions in code/logs}
+
+  - title: Technical Roadmap
+    required: false
+    elicit: true
+    instructions: Planned technical evolutions, refactoring, improvements (generate in English)
+    content: |
+      {AI_ELICIT: Ask about future technical vision for this component}
+
+  - title: References
+    required: true
+    elicit: false
+    instructions: Links to code, documentation, specs, discussions
+    content: |
+      - **Main Files**: {main_files}
+      - **Tests**: {test_files}
+      - **Configuration**: {config_files}
+      - **External Docs**: {external_docs}
+      - **Specifications**: {spec_links}

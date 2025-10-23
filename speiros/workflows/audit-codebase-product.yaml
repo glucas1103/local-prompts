@@ -1,0 +1,102 @@
+workflow:
+  name: Audit Codebase Product
+  id: audit-codebase-product
+  description: Analyzes codebase to build complete product context
+  whenToUse: Project initialization or major product context update
+  language: "en"
+
+sequence:
+  - step: 1
+    name: Create initial context folder
+    agent: context-agent
+    action: create-product-context-folder
+    input:
+      - README.md
+      - Documentation files
+      - Configuration files
+    output:
+      - .speiros/artifacts/audit-product/initial-summary.md
+    description: Scan easily accessible information and create initial summary
+
+  - step: 2
+    name: Audit product context
+    agent: context-agent
+    action: audit-product-context
+    requires:
+      - .speiros/artifacts/audit-product/initial-summary.md
+    output:
+      - .speiros/artifacts/audit-product/audit-results.md
+    description: Analyze initial summary and identify ideal file structure and information gaps
+
+  - step: 3
+    name: Enrich context
+    agent: context-agent
+    action: enrich-product-context
+    requires:
+      - .speiros/artifacts/audit-product/audit-results.md
+    output:
+      - .speiros/artifacts/audit-product/enrichment-qa.md
+    description: Q&A session with user to fill gaps
+    elicit: true
+
+  - step: 4
+    name: Create final structure
+    agent: context-agent
+    action: create-product-context-structure
+    requires:
+      - .speiros/artifacts/audit-product/initial-summary.md
+      - .speiros/artifacts/audit-product/audit-results.md
+      - .speiros/artifacts/audit-product/enrichment-qa.md
+    output:
+      - .speiros/artifacts/audit-product/structure-plan.md
+    description: Create final file structure plan
+    note: YAML templates are not created in this step anymore
+
+  - step: 5
+    name: Delegate topic research
+    agent: context-agent
+    action: delegate-product-context
+    requires:
+      - .speiros/artifacts/audit-product/structure-plan.md
+    uses_subagent: sub-context-agent
+    output:
+      - .speiros/artifacts/audit-product/research/**/*.md
+    description: For each structure node, delegate deep research to sub-agent
+    iterative: true
+
+  - step: 6
+    name: Populate templates
+    agent: sub-context-agent
+    action: populate-product-context
+    requires:
+      - .speiros/artifacts/audit-product/research/**/*.md
+      - .speiros/templates/audit-codebase/product-context-template.yaml
+    output:
+      - context/product/**/*.md
+    description: Fill templates with found information and write final context files to context/product/
+    iterative: true
+
+  - step: 7
+    name: Cleanup temporary artifacts
+    agent: context-agent
+    action: cleanup-product-artifacts
+    requires:
+      - context/product/**/*.md
+    description: Remove temporary artifacts after successful population of final deliverables
+    cleanup:
+      - .speiros/artifacts/audit-product/
+
+artifacts:
+  created:
+    intermediary:
+      - .speiros/artifacts/audit-product/initial-summary.md
+      - .speiros/artifacts/audit-product/audit-results.md
+      - .speiros/artifacts/audit-product/enrichment-qa.md
+      - .speiros/artifacts/audit-product/structure-plan.md
+      - .speiros/artifacts/audit-product/research/**/*.md
+    final:
+      - context/product/**/*.md
+  used:
+    - README.md
+    - Existing documentation
+    - .speiros/templates/audit-codebase/product-context-template.yaml

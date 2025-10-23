@@ -1,0 +1,117 @@
+workflow:
+  name: Audit Codebase Technical
+  id: audit-codebase-technical
+  description: Analyzes codebase to build complete technical context
+  whenToUse: Project initialization or major technical context update
+  language: "en"
+
+sequence:
+  - step: 1
+    name: Create initial technical context folder
+    agent: context-agent
+    action: create-technical-context-folder
+    input:
+      - Architecture files
+      - Configuration files
+      - Technical documentation
+      - Test files
+    output:
+      - .speiros/artifacts/audit-technical/initial-summary.md
+    description: Scan technical files and create initial summary
+
+  - step: 2
+    name: Audit technical context
+    agent: context-agent
+    action: audit-technical-context
+    requires:
+      - .speiros/artifacts/audit-technical/initial-summary.md
+    output:
+      - .speiros/artifacts/audit-technical/audit-results.md
+    description: Analyze initial summary and identify ideal technical structure and information gaps
+
+  - step: 3
+    name: Enrich technical context
+    agent: context-agent
+    action: enrich-technical-context
+    requires:
+      - .speiros/artifacts/audit-technical/audit-results.md
+    output:
+      - .speiros/artifacts/audit-technical/enrichment-qa.md
+    description: Q&A session with user to fill technical gaps
+    elicit: true
+
+  - step: 4
+    name: Create final technical structure
+    agent: context-agent
+    action: create-technical-context-structure
+    requires:
+      - .speiros/artifacts/audit-technical/initial-summary.md
+      - .speiros/artifacts/audit-technical/audit-results.md
+      - .speiros/artifacts/audit-technical/enrichment-qa.md
+    output:
+      - .speiros/artifacts/audit-technical/structure-plan.md
+    description: Create final technical structure plan
+    note: YAML templates are not created in this step anymore
+
+  - step: 5
+    name: Delegate technical topic research
+    agent: context-agent
+    action: delegate-technical-context
+    requires:
+      - .speiros/artifacts/audit-technical/structure-plan.md
+    uses_subagent: sub-context-agent
+    output:
+      - .speiros/artifacts/audit-technical/research/**/*.md
+    description: For each technical node, delegate deep research to sub-agent
+    iterative: true
+
+  - step: 6
+    name: Populate technical templates
+    agent: sub-context-agent
+    action: populate-technical-context
+    requires:
+      - .speiros/artifacts/audit-technical/research/**/*.md
+      - .speiros/templates/audit-codebase/technical-context-template.yaml
+    output:
+      - context/technical/**/*.md
+    description: Fill templates with found technical information and write final context files to context/technical/
+    iterative: true
+
+  - step: 7
+    name: Cleanup temporary artifacts
+    agent: context-agent
+    action: cleanup-technical-artifacts
+    requires:
+      - context/technical/**/*.md
+    description: Remove temporary artifacts after successful population of final deliverables
+    cleanup:
+      - .speiros/artifacts/audit-technical/
+
+artifacts:
+  created:
+    intermediary:
+      - .speiros/artifacts/audit-technical/initial-summary.md
+      - .speiros/artifacts/audit-technical/audit-results.md
+      - .speiros/artifacts/audit-technical/enrichment-qa.md
+      - .speiros/artifacts/audit-technical/structure-plan.md
+      - .speiros/artifacts/audit-technical/research/**/*.md
+    final:
+      - context/technical/**/*.md
+
+  used:
+    - Architecture files
+    - Configuration files
+    - Test files
+    - Technical documentation
+    - .speiros/templates/audit-codebase/technical-context-template.yaml
+
+structure_examples:
+  - context/technical/context/API.md
+  - context/technical/context/ARCHITECTURE.md
+  - context/technical/context/DATABASE.md
+  - context/technical/context/ERROR-HANDLING.md
+  - context/technical/context/TESTS.md
+  - context/technical/tools/CLERK.md
+  - context/technical/tools/DRIZZLE.md
+  - context/technical/memory/TECHNICAL-CHOICE.md
+  - context/technical/memory/TROUBLESHOOTING.md

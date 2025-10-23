@@ -1,0 +1,57 @@
+template:
+  name: Project Brief Template
+  id: brief-tmpl
+  version: 1.0
+  description: Template for feature or improvement brief
+  language: "en"
+
+sections:
+  - title: Metadata
+    required: true
+    elicit: false
+    content: |
+      - **ID**: {brief_id}
+      - **Title**: {brief_title}
+      - **Created**: {creation_date}
+      - **Status**: Draft | Analysed | Completed
+
+  - title: Original Request
+    required: true
+    elicit: false
+    instructions: Transcribe user request exactly (generate in English)
+    content: |
+      {AI_GENERATE: Copy user prompt verbatim}
+
+  - title: Reformulation
+    required: true
+    elicit: false
+    instructions: Reformulate clearly and structured (generate in English)
+    content: |
+      {AI_GENERATE: Reformulate request professionally}
+
+  - title: Objective
+    required: true
+    elicit: true
+    instructions: Clarify main objective (generate in English)
+    content: |
+      {AI_ELICIT: Ask "What is the main objective of this request?"}
+
+  - title: Context
+    required: true
+    elicit: false
+    instructions: Business or user context (generate in English)
+    content: |
+      {AI_GENERATE: Identify context from prompt}
+
+  - title: Scope
+    required: true
+    elicit: true
+    instructions: Define what's included and excluded (generate in English)
+    content: |
+      {AI_ELICIT: Ask "What is IN and OUT scope?"}
+
+  - title: Next Step
+    required: true
+    elicit: false
+    content: |
+      This brief will be analyzed by ProductMan to create a functional user story.

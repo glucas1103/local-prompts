@@ -1,0 +1,160 @@
+workflow:
+  name: Speiros Development Workflow
+  id: speiros-workflow
+  description: Transform brief into implemented code through Product, Spec, and Dev phases
+  whenToUse: New feature development or improvements
+  language: "en"
+
+prerequisites:
+  - context/product/ folder populated (via audit-codebase-product)
+  - context/technical/ folder populated (via audit-codebase-technical)
+
+phases:
+  - phase: 1
+    name: Product Definition
+    agent: product-agent
+    description: Functional analysis and user story creation
+
+  - phase: 2
+    name: Technical Specification
+    agent: spec-agent
+    description: Technical analysis and implementation plan
+
+  - phase: 3
+    name: Development & Documentation
+    agent: dev-agent
+    description: Code implementation and memory update
+
+sequence:
+  # PHASE 1: PRODUCT AGENT
+  - step: 1
+    phase: 1
+    name: Create Brief
+    agent: product-agent
+    action: create-brief
+    input:
+      - User prompt/request
+    output:
+      - roadmap/briefs/brief-{id}.md
+    description: Transform user prompt into structured brief
+    template: .speiros/templates/speiros-workflow/brief-tmpl.yaml
+
+  - step: 2
+    phase: 1
+    name: Fetch Product Context
+    agent: product-agent
+    action: fetch-product-context
+    requires:
+      - roadmap/briefs/brief-{id}.md
+    uses_context:
+      - context/product/**/*.md
+    output:
+      - .speiros/artifacts/speiros-workflow/briefs/brief-{id}-product-context.md
+    description: Extract relevant product context from context/product/
+
+  - step: 3
+    phase: 1
+    name: Create Functional Story
+    agent: product-agent
+    action: create-functional-story
+    requires:
+      - roadmap/briefs/brief-{id}.md
+      - .speiros/artifacts/speiros-workflow/briefs/brief-{id}-product-context.md
+    output:
+      - roadmap/user-stories/story-{id}.md (Product section)
+    description: Fill Product section of user story (self-contained)
+    elicit: true
+    template: .speiros/templates/speiros-workflow/user-story-speiros.yaml
+    handoff: spec-agent
+
+  # PHASE 2: SPEC AGENT
+  - step: 4
+    phase: 2
+    name: Analyse Functional Story
+    agent: spec-agent
+    action: analyse-functional-story
+    requires:
+      - roadmap/user-stories/story-{id}.md
+    output:
+      - .speiros/artifacts/speiros-workflow/user-stories/story-{id}-analysis.md
+    description: Analyze functional requirements and technical needs
+
+  - step: 5
+    phase: 2
+    name: Fetch Technical Context
+    agent: spec-agent
+    action: fetch-technical-context
+    requires:
+      - roadmap/user-stories/story-{id}.md
+      - .speiros/artifacts/speiros-workflow/user-stories/story-{id}-analysis.md
+    uses_context:
+      - context/technical/**/*.md
+    output:
+      - .speiros/artifacts/speiros-workflow/user-stories/story-{id}-technical-context.md
+    description: Extract relevant technical context from context/technical/
+
+  - step: 6
+    phase: 2
+    name: Create Technical Story
+    agent: spec-agent
+    action: create-technical-story
+    requires:
+      - roadmap/user-stories/story-{id}.md (Product section)
+      - .speiros/artifacts/speiros-workflow/user-stories/story-{id}-technical-context.md
+    output:
+      - roadmap/user-stories/story-{id}.md (Implementation Plan section)
+    description: Fill Implementation Plan section (self-contained, actionable)
+    elicit: true
+    template: .speiros/templates/speiros-workflow/user-story-speiros.yaml
+    handoff: dev-agent
+
+  # PHASE 3: DEV AGENT
+  - step: 7
+    phase: 3
+    name: Implement User Story
+    agent: dev-agent
+    action: implement-user-story
+    requires:
+      - roadmap/user-stories/story-{id}.md (complete)
+    output:
+      - Source code files
+      - Test files
+      - roadmap/user-stories/story-{id}.md (Dev Results section with Technical Decisions)
+    description: Implement complete user story following plan and document technical decisions
+
+  - step: 8
+    phase: 3
+    name: Enrich Context from Story
+    agent: dev-agent
+    action: enrich-context-from-story
+    requires:
+      - roadmap/user-stories/story-{id}.md (completed with Dev Results)
+    output:
+      - Updated context files in context/technical/
+    description: Automatically enrich technical context with decisions from Dev Results
+    optional: true
+
+artifacts:
+  created:
+    intermediary:
+      - .speiros/artifacts/speiros-workflow/briefs/brief-{id}-product-context.md
+      - .speiros/artifacts/speiros-workflow/user-stories/story-{id}-analysis.md
+      - .speiros/artifacts/speiros-workflow/user-stories/story-{id}-technical-context.md
+    final:
+      - roadmap/briefs/brief-{id}.md
+      - roadmap/user-stories/story-{id}.md (with Technical Decisions in Dev Results)
+      - Source code files
+      - Test files
+      - Enriched context/technical/ files
+
+  used:
+    - context/product/**/*.md
+    - context/technical/**/*.md
+    - .speiros/templates/speiros-workflow/brief-tmpl.yaml
+    - .speiros/templates/speiros-workflow/user-story-speiros.yaml
+
+workflow_properties:
+  sequential: true
+  phases_mandatory: true
+  context_required: true
+  self_contained_handoffs: true

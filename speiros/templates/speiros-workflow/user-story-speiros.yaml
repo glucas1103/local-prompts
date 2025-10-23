@@ -1,0 +1,124 @@
+template:
+  name: Speiros User Story Template
+  id: user-story-speiros
+  version: 1.0
+  description: Complete user story template for Speiros workflow (Product + Spec + Dev sections)
+  language: "en"
+
+sections:
+  # === PRODUCT SECTION (filled by product-agent) ===
+  - title: Metadata
+    required: true
+    elicit: false
+    filled_by: product-agent
+    content: |
+      - **ID**: {story_id}
+      - **Title**: {story_title}
+      - **Epic**: {epic_name}
+      - **Status**: Draft | Product-Ready | Spec-Ready | In-Progress | Done
+      - **Priority**: Critical | High | Medium | Low
+      - **Estimation**: {points}
+
+  - title: Description
+    required: true
+    elicit: false
+    filled_by: product-agent
+    instructions: Format - As a [who], I want [what], so that [why] (generate in English)
+    content: |
+      {AI_GENERATE: Create standard user story description}
+
+  - title: Functional Context
+    required: true
+    elicit: false
+    filled_by: product-agent
+    instructions: Self-contained functional context (summary of relevant product-context, generate in English)
+    content: |
+      {AI_GENERATE: Synthesize relevant product context}
+
+  - title: Use Cases
+    required: true
+    elicit: true
+    filled_by: product-agent
+    content: |
+      {AI_ELICIT: Describe main use cases}
+
+  - title: Acceptance Criteria
+    required: true
+    elicit: true
+    filled_by: product-agent
+    content: |
+      {AI_ELICIT: List functional acceptance criteria}
+
+  # === SPEC SECTION (filled by spec-agent) ===
+  - title: Technical Analysis
+    required: true
+    elicit: false
+    filled_by: spec-agent
+    instructions: Technical analysis of functional requirements (generate in English)
+    content: |
+      {AI_GENERATE: Analyze technical implications}
+
+  - title: Technical Context
+    required: true
+    elicit: false
+    filled_by: spec-agent
+    instructions: Self-contained technical context (summary of relevant technical-context, generate in English)
+    content: |
+      {AI_GENERATE: Synthesize relevant technical context}
+
+  - title: Implementation Plan
+    required: true
+    elicit: true
+    filled_by: spec-agent
+    instructions: Detailed task list with order and details (generate in English)
+    content: |
+      {AI_ELICIT: Create detailed implementation plan task by task}
+
+  - title: Files to Modify/Create
+    required: true
+    elicit: false
+    filled_by: spec-agent
+    content: |
+      {AI_GENERATE: List impacted files}
+
+  - title: Points of Attention
+    required: true
+    elicit: false
+    filled_by: spec-agent
+    content: |
+      {AI_GENERATE: Identify risks and attention points}
+
+  # === DEV SECTION (filled by dev-agent) ===
+  - title: Implementation Results
+    required: true
+    elicit: false
+    filled_by: dev-agent
+    instructions: Document what was implemented, files modified, tests added (generate in English)
+    content: |
+      {AI_GENERATE: Document completed implementation}
+
+  - title: Technical Decisions
+    required: true
+    elicit: false
+    filled_by: dev-agent
+    instructions: |
+      Document technical decisions made during implementation (generate in English).
+      For each decision: what was decided, why, and what's impacted.
+      This is the single source of truth for technical decisions.
+    content: |
+      {AI_GENERATE: Document technical decisions with context and rationale}
+
+  - title: Context Impact
+    required: true
+    elicit: false
+    filled_by: dev-agent
+    instructions: List context/technical/ files to enrich and why (generate in English)
+    content: |
+      {AI_GENERATE: Identify impacted context files}
+
+  - title: Tests
+    required: true
+    elicit: false
+    filled_by: dev-agent
+    content: |
+      {AI_GENERATE: List tests added and results}
